@@ -5,17 +5,42 @@
 
 <h3>Pokémon Search</h3>
 
-<input @bind="pokemonName" placeholder="Enter Pokémon name..." />
-<button @onclick="SearchPokemon">Search</button>
+<input @bind="pokemonName" placeholder="Enter Pokémon name..." class="form-control" />
+<button @onclick="SearchPokemon" class="btn btn-primary mt-2">Search</button>
 
 @if (pokemon != null)
 {
-    <div>
-        <h4>@pokemon.Name</h4>
-        <p>Height: @pokemon.Height</p>
-        <p>Weight: @pokemon.Weight</p>
-        <p>@pokemon.</p>
-        <img src="@pokemon.Sprites?.Front_Default" alt="Pokemon image" />
+    <div class="card mt-4" style="width: 18rem;">
+        <img src="@pokemon.Sprites?.Front_Default" class="card-img-top" alt="Front sprite">
+        <div class="card-body">
+            <h5 class="card-title">@pokemon.Name?.ToUpper()</h5>
+            <p class="card-text">Height: @(pokemon.Height * 0.1)m</p>
+            <p class="card-text">Weight: @(pokemon.Weight * 0.1)kg</p>
+
+            <h6>Types:</h6>
+            <ul>
+                @foreach (var type in pokemon.Types ?? new List<TypeEntry>())
+                {
+                    <li>@type.Type?.Name?.ToUpper()</li>
+                }
+            </ul>
+
+            <h6>Abilities:</h6>
+            <ul>
+                @foreach (var ability in pokemon.Abilities ?? new List<AbilityEntry>())
+                {
+                    <li>@ability.Ability?.Name?.ToUpper()</li>
+                }
+            </ul>
+
+            <h6>Base Stats:</h6>
+            <ul>
+                @foreach (var stat in pokemon.Stats ?? new List<StatEntry>())
+                {
+                    <li>@stat.Stat?.Name?.ToUpper(): @stat.Base_Stat</li>
+                }
+            </ul>
+        </div>
     </div>
 }
 else if (isSearching)
@@ -24,7 +49,7 @@ else if (isSearching)
 }
 else if (notFound)
 {
-    <p>Pokémon not found.</p>
+    <p>Pokémon not found. Please check the spelling.</p>
 }
 
 @code {
