@@ -1,0 +1,44 @@
+@page "/pokemon"
+@using BlazorDex.Services
+@inject PokeService PokeService
+@rendermode InteractiveServer
+
+<h3>Pokémon Search</h3>
+
+<input @bind="pokemonName" placeholder="Enter Pokémon name..." />
+<button @onclick="SearchPokemon">Search</button>
+
+@if (pokemon != null)
+{
+    <div>
+        <h4>@pokemon.Name</h4>
+        <p>Height: @pokemon.Height</p>
+        <p>Weight: @pokemon.Weight</p>
+        <p>@pokemon.</p>
+        <img src="@pokemon.Sprites?.Front_Default" alt="Pokemon image" />
+    </div>
+}
+else if (isSearching)
+{
+    <p>Loading...</p>
+}
+else if (notFound)
+{
+    <p>Pokémon not found.</p>
+}
+
+@code {
+    private string pokemonName = string.Empty;
+    private Pokemon? pokemon = null;
+    private bool isSearching = false;
+    private bool notFound = false;
+
+    private async Task SearchPokemon()
+    {
+        isSearching = true;
+        notFound = false;
+        pokemon = await PokeService.GetPokemonAsync(pokemonName.ToLower());
+        isSearching = false;
+        notFound = pokemon == null;
+    }
+}
